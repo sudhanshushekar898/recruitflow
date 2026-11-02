@@ -1,0 +1,12 @@
+# Local development only. Credentials match docker-compose.yml and are not secrets.
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/recruitflow}
+    username: ${DB_USER:recruitflow}
+    password: ${DB_PASSWORD:recruitflow}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

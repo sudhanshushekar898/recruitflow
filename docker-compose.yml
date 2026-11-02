@@ -1,0 +1,42 @@
+# Local development stack. Credentials here are throwaway and local-only.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: recruitflow
+      POSTGRES_USER: recruitflow
+      POSTGRES_PASSWORD: recruitflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recruitflow -d recruitflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # S3-compatible storage (for M7) is added later; MinIO's public images are no longer pullable.
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+
+  backend:
+    build: ./backend
+    profiles: ["full"]
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/recruitflow
+      DB_USER: recruitflow
+      DB_PASSWORD: recruitflow
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
