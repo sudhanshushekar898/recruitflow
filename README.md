@@ -16,6 +16,14 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local
 
 With the `local` profile the first start creates an admin (`admin@recruitflow.local`, password from `BOOTSTRAP_ADMIN_PASSWORD`, default in `application-local.yml`) that must change its password on first login. Invite and reset emails appear in Mailpit.
 
+Frontend (needs the backend on port 8080; Vite proxies `/api` so cookies stay same-origin):
+
+```bash
+cd frontend && npm ci && npm run dev     # http://localhost:5173
+```
+
+Or run everything in containers: `docker compose --profile full up --build` serves the SPA on http://localhost:8081.
+
 Health: http://localhost:8080/actuator/health/readiness · API docs: http://localhost:8080/swagger-ui.html · Mail UI: http://localhost:8025
 
 ## Test
