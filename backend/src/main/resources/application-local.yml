@@ -5,6 +5,15 @@ spring:
     username: ${DB_USER:recruitflow}
     password: ${DB_PASSWORD:recruitflow}
 
+recruitflow:
+  security:
+    jwt:
+      allow-ephemeral-key: true
+  bootstrap:
+    admin-email: ${BOOTSTRAP_ADMIN_EMAIL:admin@recruitflow.local}
+    # Throwaway local default; the account must change it on first login.
+    admin-password: ${BOOTSTRAP_ADMIN_PASSWORD:Local-Admin-Pass-2026}
+
 springdoc:
   api-docs:
     enabled: true

@@ -630,6 +630,10 @@ Default `collaborative=true` for reads and `false` for writes (owner-or-admin), 
 | `JOB_NOT_OPEN` | 422 | Applying to a non-`OPEN` job |
 | `FILE_TYPE_NOT_ALLOWED` / `FILE_TOO_LARGE` | 415 / 413 | Upload validation |
 | `RATE_LIMITED` | 429 | Throttled (`Retry-After` header) |
+| `PASSWORD_CHANGE_REQUIRED` | 403 | Token carries the forced-change claim; only change-password, me and logout are allowed (added in M1) |
+| `INVALID_TOKEN` | 400 | Invite or password-reset link unknown, used or expired (added in M1) |
+| `DUPLICATE_USER` | 409 | A user with this email already exists (added in M1) |
+| `INVALID_OPERATION` | 422 | Business rule refusal, such as an admin deactivating themselves or a wrong current password (added in M1) |
 | `INTERNAL_ERROR` | 500 | Unexpected (correlationId only) |
 
 ### 7.3 Endpoint catalogue

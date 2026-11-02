@@ -6,7 +6,12 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "Validation failed"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Authentication required"),
+    ACCOUNT_LOCKED(HttpStatus.LOCKED, "Account temporarily locked"),
+    PASSWORD_CHANGE_REQUIRED(HttpStatus.FORBIDDEN, "Password change required"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Access denied"),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "Invalid or expired token"),
+    DUPLICATE_USER(HttpStatus.CONFLICT, "User already exists"),
+    INVALID_OPERATION(HttpStatus.UNPROCESSABLE_ENTITY, "Operation not allowed"),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not found"),
     DUPLICATE_CANDIDATE(HttpStatus.CONFLICT, "Candidate already exists"),
     DUPLICATE_APPLICATION(HttpStatus.CONFLICT, "Application already exists"),

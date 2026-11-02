@@ -14,6 +14,8 @@ cd backend
 mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
+With the `local` profile the first start creates an admin (`admin@recruitflow.local`, password from `BOOTSTRAP_ADMIN_PASSWORD`, default in `application-local.yml`) that must change its password on first login. Invite and reset emails appear in Mailpit.
+
 Health: http://localhost:8080/actuator/health/readiness · API docs: http://localhost:8080/swagger-ui.html · Mail UI: http://localhost:8025
 
 ## Test

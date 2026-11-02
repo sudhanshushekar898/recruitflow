@@ -24,6 +24,7 @@
     <logstash-logback.version>8.0</logstash-logback.version>
     <archunit.version>1.4.0</archunit.version>
     <jacoco.version>0.8.13</jacoco.version>
+    <uuid-creator.version>6.0.0</uuid-creator.version>
     <!-- Newer docker-java client: Docker Engine 29 rejects the API version used by 1.21.0 -->
     <testcontainers.version>1.21.4</testcontainers.version>
   </properties>
@@ -46,6 +47,24 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+    <dependency>
+      <!-- UUIDv7 generation (ADR: time-ordered, non-enumerable ids); the JDK has no UUIDv7 -->
+      <groupId>com.github.f4b6a3</groupId>
+      <artifactId>uuid-creator</artifactId>
+      <version>${uuid-creator.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
@@ -74,6 +93,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

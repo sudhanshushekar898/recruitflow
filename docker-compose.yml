@@ -32,6 +32,7 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/recruitflow
       DB_USER: recruitflow
       DB_PASSWORD: recruitflow
+      MAIL_HOST: mailpit
     ports:
       - "8080:8080"
     depends_on:
