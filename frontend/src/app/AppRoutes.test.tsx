@@ -46,6 +46,13 @@ describe('route guards', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Access denied')
   })
 
+  it('denies the candidate pages to interviewers', async () => {
+    signIn(userSummary(['INTERVIEWER']))
+    renderAt(<AppRoutes />, '/candidates/abc')
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Access denied')
+  })
+
   it('shows the users page to admins', async () => {
     signIn(userSummary(['ADMIN']))
     server.use(
@@ -76,8 +83,9 @@ describe('route guards', () => {
 
 describe('navigation', () => {
   it('lists admin-only entries only for admins', () => {
-    expect(visibleNav(['RECRUITER']).map((i) => i.label)).toEqual(['Dashboard'])
-    expect(visibleNav(['ADMIN']).map((i) => i.label)).toEqual(['Dashboard', 'Users'])
+    expect(visibleNav(['RECRUITER']).map((i) => i.label)).toEqual(['Dashboard', 'Candidates'])
+    expect(visibleNav(['ADMIN']).map((i) => i.label)).toEqual(['Dashboard', 'Candidates', 'Users'])
+    expect(visibleNav(['INTERVIEWER']).map((i) => i.label)).toEqual(['Dashboard'])
   })
 
   it('renders the sidebar for the signed-in role and signs out', async () => {

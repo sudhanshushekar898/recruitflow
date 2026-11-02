@@ -20,6 +20,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/candidates/{id}/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["replaceSkills"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/{id}/consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["recordConsent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users": {
         parameters: {
             query?: never;
@@ -62,6 +94,86 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["activate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["search"];
+        put?: never;
+        post: operations["create_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["search_1"];
+        put?: never;
+        post: operations["create_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/{id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["notes"];
+        put?: never;
+        post: operations["addNote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["archive"];
         delete?: never;
         options?: never;
         head?: never;
@@ -196,6 +308,22 @@ export interface paths {
         patch: operations["update"];
         trace?: never;
     };
+    "/api/v1/candidates/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["update_1"];
+        trace?: never;
+    };
     "/api/v1/auth/me": {
         parameters: {
             query?: never;
@@ -237,11 +365,126 @@ export interface components {
             /** Format: int64 */
             version?: number;
         };
+        ReplaceSkillsRequest: {
+            skills: components["schemas"]["SkillEntryRequest"][];
+        };
+        SkillEntryRequest: {
+            /** Format: uuid */
+            skillId: string;
+            /** Format: int32 */
+            years?: number;
+            /** @enum {string} */
+            level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
+        };
+        CandidateView: {
+            /** Format: uuid */
+            id?: string;
+            firstName?: string;
+            lastName?: string;
+            email?: string;
+            phone?: string;
+            currentTitle?: string;
+            currentCompany?: string;
+            location?: string;
+            /** Format: int32 */
+            yearsExperience?: number;
+            /** @enum {string} */
+            source?: "LINKEDIN" | "REFERRAL" | "JOB_BOARD" | "AGENCY" | "OTHER";
+            summary?: string;
+            linkedinUrl?: string;
+            /** @enum {string} */
+            status?: "ACTIVE" | "ARCHIVED" | "DO_NOT_CONTACT" | "ANONYMISED";
+            /** Format: uuid */
+            ownerId?: string;
+            ownerName?: string;
+            /** Format: date-time */
+            retentionUntil?: string;
+            skills?: components["schemas"]["SkillEntryView"][];
+            consent?: components["schemas"]["ConsentView"];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            /** Format: int64 */
+            version?: number;
+        };
+        ConsentView: {
+            /** @enum {string} */
+            legalBasis?: "CONSENT" | "LEGITIMATE_INTEREST";
+            /** Format: date-time */
+            givenAt?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            evidence?: string;
+            /** Format: date-time */
+            withdrawnAt?: string;
+        };
+        SkillEntryView: {
+            /** Format: uuid */
+            skillId?: string;
+            name?: string;
+            displayName?: string;
+            /** Format: int32 */
+            years?: number;
+            /** @enum {string} */
+            level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
+        };
+        ConsentRequest: {
+            /** @enum {string} */
+            legalBasis: "CONSENT" | "LEGITIMATE_INTEREST";
+            /** Format: date-time */
+            givenAt: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            evidence?: string;
+            withdrawn?: boolean;
+        };
         CreateUserRequest: {
             email: string;
             firstName: string;
             lastName: string;
             roles: ("ADMIN" | "RECRUITER" | "INTERVIEWER")[];
+        };
+        CreateSkillRequest: {
+            name: string;
+            category?: string;
+        };
+        SkillView: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            displayName?: string;
+            category?: string;
+        };
+        CreateCandidateRequest: {
+            firstName: string;
+            lastName: string;
+            email: string;
+            phone?: string;
+            currentTitle?: string;
+            currentCompany?: string;
+            location?: string;
+            /** Format: int32 */
+            yearsExperience?: number;
+            /** @enum {string} */
+            source: "LINKEDIN" | "REFERRAL" | "JOB_BOARD" | "AGENCY" | "OTHER";
+            summary?: string;
+            linkedinUrl?: string;
+            skills?: components["schemas"]["SkillEntryRequest"][];
+            consent?: components["schemas"]["ConsentRequest"];
+        };
+        CreateNoteRequest: {
+            body: string;
+        };
+        NoteView: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            authorId?: string;
+            authorName?: string;
+            body?: string;
+            /** Format: date-time */
+            createdAt?: string;
         };
         ResetPasswordRequest: {
             token: string;
@@ -283,8 +526,52 @@ export interface components {
             /** Format: int64 */
             version: number;
         };
+        UpdateCandidateRequest: {
+            firstName?: string;
+            lastName?: string;
+            email?: string;
+            phone?: string;
+            currentTitle?: string;
+            currentCompany?: string;
+            location?: string;
+            /** Format: int32 */
+            yearsExperience?: number;
+            /** @enum {string} */
+            source?: "LINKEDIN" | "REFERRAL" | "JOB_BOARD" | "AGENCY" | "OTHER";
+            summary?: string;
+            linkedinUrl?: string;
+            /** Format: int64 */
+            version: number;
+        };
         PageResponseUserView: {
             content?: components["schemas"]["UserView"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        CandidateSummary: {
+            /** Format: uuid */
+            id?: string;
+            fullName?: string;
+            email?: string;
+            currentTitle?: string;
+            location?: string;
+            /** Format: int32 */
+            yearsExperience?: number;
+            /** @enum {string} */
+            status?: "ACTIVE" | "ARCHIVED" | "DO_NOT_CONTACT" | "ANONYMISED";
+            skills?: string[];
+            ownerName?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PageResponseCandidateSummary: {
+            content?: components["schemas"]["CandidateSummary"][];
             /** Format: int32 */
             page?: number;
             /** Format: int32 */
@@ -325,6 +612,58 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    replaceSkills: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceSkillsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
+                };
+            };
+        };
+    };
+    recordConsent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
                 };
             };
         };
@@ -420,6 +759,199 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    search: {
+        parameters: {
+            query?: {
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SkillView"][];
+                };
+            };
+        };
+    };
+    create_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSkillRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SkillView"];
+                };
+            };
+        };
+    };
+    search_1: {
+        parameters: {
+            query?: {
+                q?: string;
+                skillId?: string[];
+                location?: string;
+                status?: "ACTIVE" | "ARCHIVED" | "DO_NOT_CONTACT" | "ANONYMISED";
+                ownerId?: string;
+                source?: "LINKEDIN" | "REFERRAL" | "JOB_BOARD" | "AGENCY" | "OTHER";
+                minYears?: number;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseCandidateSummary"];
+                };
+            };
+        };
+    };
+    create_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCandidateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
+                };
+            };
+        };
+    };
+    restore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
+                };
+            };
+        };
+    };
+    notes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NoteView"][];
+                };
+            };
+        };
+    };
+    addNote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateNoteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NoteView"];
+                };
+            };
+        };
+    };
+    archive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
                 };
             };
         };
@@ -624,6 +1156,54 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
+                };
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCandidateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
                 };
             };
         };

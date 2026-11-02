@@ -59,7 +59,10 @@ public abstract class AbstractIntegrationTest {
 
     @BeforeEach
     void cleanDatabase() {
-        jdbc.execute("TRUNCATE refresh_tokens, one_time_tokens, user_roles, users, audit_log CASCADE");
+        // Skills are seeded reference data and are kept; everything else starts empty.
+        jdbc.execute("TRUNCATE candidate_notes, candidate_skills, candidate_consents, candidates, "
+                + "refresh_tokens, one_time_tokens, user_roles, users, audit_log CASCADE");
+        jdbc.execute("DELETE FROM skills WHERE created_at > now() - interval '1 day' AND name LIKE 'test-%'");
     }
 
     protected User createUser(String email, String password, Role... roles) {

@@ -5,7 +5,8 @@ import { ApiError, networkError, toApiError } from './errors'
 export interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
-  query?: Record<string, string | number | boolean | undefined | null>
+  /** Arrays become repeated parameters (skillId=a&skillId=b). */
+  query?: Record<string, string | number | boolean | string[] | undefined | null>
   /** false for endpoints that must not carry a token or trigger a refresh (login, reset, ...). */
   auth?: boolean
   /** Extra headers, for example X-Requested-With on cookie-authenticated endpoints. */
@@ -17,7 +18,8 @@ export interface RequestOptions {
 function buildUrl(path: string, query?: RequestOptions['query']): string {
   const url = new URL(path, window.location.origin)
   Object.entries(query ?? {}).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value))
+    if (Array.isArray(value)) value.forEach((item) => url.searchParams.append(key, item))
+    else if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value))
   })
   return url.toString()
 }

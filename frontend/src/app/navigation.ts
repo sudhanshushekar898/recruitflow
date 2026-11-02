@@ -10,6 +10,7 @@ export interface NavItem {
 /** Each milestone adds its entries here; the sidebar and route guards both read this list. */
 export const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Dashboard' },
+  { to: '/candidates', label: 'Candidates', roles: ['ADMIN', 'RECRUITER'] },
   { to: '/users', label: 'Users', roles: ['ADMIN'] },
 ]
 

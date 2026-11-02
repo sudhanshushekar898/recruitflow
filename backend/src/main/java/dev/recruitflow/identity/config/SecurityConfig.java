@@ -85,6 +85,8 @@ class SecurityConfig {
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                        // Interviewers get scoped candidate access in M6, through the interview module.
+                        .requestMatchers("/api/v1/candidates/**").hasAnyRole("ADMIN", "RECRUITER")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))

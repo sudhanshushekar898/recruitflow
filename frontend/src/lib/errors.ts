@@ -9,14 +9,24 @@ export class ApiError extends Error {
   readonly code: string
   readonly fieldErrors: FieldError[]
   readonly correlationId?: string
+  /** The full problem body, for extension members such as existingCandidateId. */
+  readonly extensions: Record<string, unknown>
 
-  constructor(init: { status: number; code: string; detail: string; fieldErrors?: FieldError[]; correlationId?: string }) {
+  constructor(init: {
+    status: number
+    code: string
+    detail: string
+    fieldErrors?: FieldError[]
+    correlationId?: string
+    extensions?: Record<string, unknown>
+  }) {
     super(init.detail)
     this.name = 'ApiError'
     this.status = init.status
     this.code = init.code
     this.fieldErrors = init.fieldErrors ?? []
     this.correlationId = init.correlationId
+    this.extensions = init.extensions ?? {}
   }
 }
 
@@ -34,6 +44,7 @@ export async function toApiError(response: Response): Promise<ApiError> {
     detail: typeof body.detail === 'string' ? body.detail : 'Something went wrong. Please try again.',
     fieldErrors: errors,
     correlationId: typeof body.correlationId === 'string' ? body.correlationId : undefined,
+    extensions: body,
   })
 }
 

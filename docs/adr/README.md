@@ -8,3 +8,4 @@ The full decision summary (ADR-001 to ADR-018) is in `../ARCHITECTURE.md` sectio
 | [001](001-modular-monolith.md) | Modular monolith with ArchUnit-enforced boundaries | Accepted |
 | [002](002-testcontainers-not-h2.md) | Integration tests run on real PostgreSQL via Testcontainers | Accepted |
 | [003](003-jwt-and-refresh-rotation.md) | RS256 access tokens and rotating refresh tokens with reuse detection | Accepted |
+| [004](004-candidate-keyword-search.md) | Candidate keyword search uses a generated text column with a trigram index | Accepted |
