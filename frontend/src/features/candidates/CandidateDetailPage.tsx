@@ -4,6 +4,8 @@ import { Alert, Badge, Button, Card, SelectField, Spinner, TextAreaField, TextFi
 import { isApiError } from '../../lib/apiClient'
 import type { CandidateView, LegalBasis } from '../../types'
 import { useCandidate, useCandidateMutations, useNotes } from './api'
+import { useCandidateApplications, useJobMutations, useOpenJobs } from '../jobs/api'
+import { STAGE_LABEL, STAGE_TONE } from '../jobs/labels'
 import { LEGAL_BASES, LEVELS, SOURCES, STATUSES, formatDate, formatDateTime } from './labels'
 
 export function CandidateDetailPage() {
@@ -21,6 +23,7 @@ export function CandidateDetailPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Profile candidate={candidate} />
+          <Applications candidate={candidate} />
           <Notes candidateId={candidate.id} />
         </div>
         <div className="space-y-6">
@@ -116,6 +119,49 @@ function Profile({ candidate: c }: { candidate: CandidateView }) {
           ))}
         </ul>
       )}
+    </Card>
+  )
+}
+
+function Applications({ candidate }: { candidate: CandidateView }) {
+  const { data: applications, isPending } = useCandidateApplications(candidate.id)
+  const { data: openJobs } = useOpenJobs()
+  const { apply } = useJobMutations()
+  const [jobId, setJobId] = useState('')
+  const appliedJobIds = new Set(applications?.map((a) => a.jobId))
+  const available = openJobs?.content.filter((j) => !appliedJobIds.has(j.id)) ?? []
+
+  return (
+    <Card title="Applications">
+      {isPending && <Spinner />}
+      {applications && applications.length === 0 && <p className="text-sm text-slate-500">Not in any job pipeline yet.</p>}
+      <ul className="divide-y divide-slate-100">
+        {applications?.map((a) => (
+          <li key={a.id} className="flex items-center justify-between py-2 text-sm">
+            <span>
+              <Link to={`/jobs/${a.jobId}/pipeline`} className="font-medium text-indigo-700 hover:underline">{a.jobTitle}</Link>
+              <span className="text-slate-500"> · {a.clientName}</span>
+            </span>
+            <Badge tone={STAGE_TONE[a.status]}>{STAGE_LABEL[a.status]}</Badge>
+          </li>
+        ))}
+      </ul>
+      {candidate.status === 'ACTIVE' && (
+        <form
+          className="mt-4 flex items-end gap-2"
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (jobId) apply.mutate({ candidateId: candidate.id, jobId }, { onSuccess: () => setJobId('') })
+          }}
+        >
+          <SelectField label="Add to a job" className="flex-1" value={jobId} onChange={(e) => setJobId(e.target.value)}>
+            <option value="">{available.length ? 'Choose an open job…' : 'No open jobs available'}</option>
+            {available.map((j) => <option key={j.id} value={j.id}>{j.title} · {j.clientName}</option>)}
+          </SelectField>
+          <Button type="submit" loading={apply.isPending} disabled={!jobId}>Add</Button>
+        </form>
+      )}
+      {apply.isError && <div className="mt-3"><Alert>{apply.error.message}</Alert></div>}
     </Card>
   )
 }

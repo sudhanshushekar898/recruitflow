@@ -2,6 +2,11 @@ import { Outlet, Route, Routes } from 'react-router-dom'
 import { CandidateDetailPage } from '../features/candidates/CandidateDetailPage'
 import { CandidateFormPage } from '../features/candidates/CandidateFormPage'
 import { CandidatesPage } from '../features/candidates/CandidatesPage'
+import { ClientsPage } from '../features/jobs/ClientsPage'
+import { JobDetailPage } from '../features/jobs/JobDetailPage'
+import { JobFormPage } from '../features/jobs/JobFormPage'
+import { JobsPage } from '../features/jobs/JobsPage'
+import { PipelinePage } from '../features/jobs/PipelinePage'
 import { AcceptInvitePage, ChangePasswordPage, ForgotPasswordPage, ResetPasswordPage } from '../features/auth/PasswordPages'
 import { LoginPage } from '../features/auth/LoginPage'
 import { PublicOnly, RequireAuth, RequireRole } from '../features/auth/guards'
@@ -45,6 +50,12 @@ export function AppRoutes() {
             <Route path="/candidates/new" element={<CandidateFormPage />} />
             <Route path="/candidates/:id" element={<CandidateDetailPage />} />
             <Route path="/candidates/:id/edit" element={<CandidateFormPage />} />
+            <Route path="/jobs" element={<JobsPage />} />
+            <Route path="/jobs/new" element={<JobFormPage />} />
+            <Route path="/jobs/:id" element={<JobDetailPage />} />
+            <Route path="/jobs/:id/edit" element={<JobFormPage />} />
+            <Route path="/jobs/:id/pipeline" element={<PipelinePage />} />
+            <Route path="/clients" element={<ClientsPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>

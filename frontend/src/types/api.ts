@@ -20,7 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/candidates/{id}/skills": {
+    "/api/v1/jobs/{id}/skills": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,6 +29,22 @@ export interface paths {
         };
         get?: never;
         put: operations["replaceSkills"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/{id}/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["replaceSkills_1"];
         post?: never;
         delete?: never;
         options?: never;
@@ -116,7 +132,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/candidates": {
+    "/api/v1/jobs": {
         parameters: {
             query?: never;
             header?: never;
@@ -126,6 +142,54 @@ export interface paths {
         get: operations["search_1"];
         put?: never;
         post: operations["create_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jobs/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["changeStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_1"];
+        put?: never;
+        post: operations["create_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["search_2"];
+        put?: never;
+        post: operations["create_4"];
         delete?: never;
         options?: never;
         head?: never;
@@ -292,6 +356,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_2"];
+        put?: never;
+        post: operations["create_5"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["changeStatus_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/{id}": {
         parameters: {
             query?: never;
@@ -308,7 +404,7 @@ export interface paths {
         patch: operations["update"];
         trace?: never;
     };
-    "/api/v1/candidates/{id}": {
+    "/api/v1/jobs/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -324,6 +420,70 @@ export interface paths {
         patch: operations["update_1"];
         trace?: never;
     };
+    "/api/v1/clients/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["update_2"];
+        trace?: never;
+    };
+    "/api/v1/candidates/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_3"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["update_3"];
+        trace?: never;
+    };
+    "/api/v1/jobs/{jobId}/pipeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["pipeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/{candidateId}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["forCandidate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/me": {
         parameters: {
             query?: never;
@@ -332,6 +492,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_4"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["history"];
         put?: never;
         post?: never;
         delete?: never;
@@ -360,6 +552,64 @@ export interface components {
             pendingInvite?: boolean;
             /** Format: date-time */
             lastLoginAt?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: int64 */
+            version?: number;
+        };
+        ReplaceJobSkillsRequest: {
+            skills: components["schemas"]["SkillRequirementRequest"][];
+        };
+        SkillRequirementRequest: {
+            /** Format: uuid */
+            skillId: string;
+            /** @enum {string} */
+            importance: "REQUIRED" | "NICE_TO_HAVE";
+            /** Format: int32 */
+            minYears?: number;
+            /** Format: int32 */
+            weight?: number;
+        };
+        JobSkillView: {
+            /** Format: uuid */
+            skillId?: string;
+            name?: string;
+            displayName?: string;
+            /** @enum {string} */
+            importance?: "REQUIRED" | "NICE_TO_HAVE";
+            /** Format: int32 */
+            minYears?: number;
+            /** Format: int32 */
+            weight?: number;
+        };
+        JobView: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            clientId?: string;
+            clientName?: string;
+            title?: string;
+            description?: string;
+            location?: string;
+            /** @enum {string} */
+            employmentType?: "FULL_TIME" | "PART_TIME" | "CONTRACT";
+            salaryMin?: number;
+            salaryMax?: number;
+            currency?: string;
+            /** Format: int32 */
+            openings?: number;
+            /** @enum {string} */
+            status?: "DRAFT" | "OPEN" | "ON_HOLD" | "CLOSED";
+            allowedStatuses?: ("DRAFT" | "OPEN" | "ON_HOLD" | "CLOSED")[];
+            /** Format: uuid */
+            ownerId?: string;
+            ownerName?: string;
+            /** Format: date-time */
+            openedAt?: string;
+            /** Format: date-time */
+            closedAt?: string;
+            skills?: components["schemas"]["JobSkillView"][];
+            canEdit?: boolean;
             /** Format: date-time */
             createdAt?: string;
             /** Format: int64 */
@@ -456,6 +706,44 @@ export interface components {
             displayName?: string;
             category?: string;
         };
+        CreateJobRequest: {
+            /** Format: uuid */
+            clientId: string;
+            title: string;
+            description?: string;
+            location?: string;
+            /** @enum {string} */
+            employmentType: "FULL_TIME" | "PART_TIME" | "CONTRACT";
+            salaryMin?: number;
+            salaryMax?: number;
+            currency?: string;
+            /** Format: int32 */
+            openings?: number;
+            skills?: components["schemas"]["SkillRequirementRequest"][];
+        };
+        ChangeJobStatusRequest: {
+            /** @enum {string} */
+            toStatus: "DRAFT" | "OPEN" | "ON_HOLD" | "CLOSED";
+        };
+        CreateClientRequest: {
+            name: string;
+            industry?: string;
+            contactName?: string;
+            contactEmail?: string;
+        };
+        ClientView: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            industry?: string;
+            contactName?: string;
+            contactEmail?: string;
+            active?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: int64 */
+            version?: number;
+        };
         CreateCandidateRequest: {
             firstName: string;
             lastName: string;
@@ -520,9 +808,84 @@ export interface components {
             token: string;
             password: string;
         };
+        CreateApplicationRequest: {
+            /** Format: uuid */
+            candidateId: string;
+            /** Format: uuid */
+            jobId: string;
+            /** @enum {string} */
+            source?: "LINKEDIN" | "REFERRAL" | "JOB_BOARD" | "AGENCY" | "OTHER";
+        };
+        ApplicationView: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            candidateId?: string;
+            candidateName?: string;
+            candidateEmail?: string;
+            candidateTitle?: string;
+            /** Format: uuid */
+            jobId?: string;
+            jobTitle?: string;
+            clientName?: string;
+            /** @enum {string} */
+            status?: "NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
+            allowedNext?: ("NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN")[];
+            /** @enum {string} */
+            rejectionReason?: "SKILLS_MISMATCH" | "EXPERIENCE" | "SALARY_EXPECTATIONS" | "CULTURE_FIT" | "POSITION_FILLED" | "CANDIDATE_UNRESPONSIVE" | "OTHER";
+            /** @enum {string} */
+            source?: "LINKEDIN" | "REFERRAL" | "JOB_BOARD" | "AGENCY" | "OTHER";
+            /** Format: uuid */
+            ownerId?: string;
+            ownerName?: string;
+            /** Format: date-time */
+            appliedAt?: string;
+            /** Format: date-time */
+            statusChangedAt?: string;
+            /** Format: int64 */
+            version?: number;
+        };
+        ChangeStatusRequest: {
+            /** @enum {string} */
+            toStatus: "NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
+            /** @enum {string} */
+            reason?: "SKILLS_MISMATCH" | "EXPERIENCE" | "SALARY_EXPECTATIONS" | "CULTURE_FIT" | "POSITION_FILLED" | "CANDIDATE_UNRESPONSIVE" | "OTHER";
+            comment?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        StatusChangeResult: {
+            application?: components["schemas"]["ApplicationView"];
+            jobCloseSuggested?: boolean;
+        };
         UpdateUserRequest: {
             firstName?: string;
             lastName?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        UpdateJobRequest: {
+            /** Format: uuid */
+            clientId?: string;
+            title?: string;
+            description?: string;
+            location?: string;
+            /** @enum {string} */
+            employmentType?: "FULL_TIME" | "PART_TIME" | "CONTRACT";
+            salaryMin?: number;
+            salaryMax?: number;
+            currency?: string;
+            /** Format: int32 */
+            openings?: number;
+            /** Format: int64 */
+            version: number;
+        };
+        UpdateClientRequest: {
+            name?: string;
+            industry?: string;
+            contactName?: string;
+            contactEmail?: string;
+            active?: boolean;
             /** Format: int64 */
             version: number;
         };
@@ -545,6 +908,66 @@ export interface components {
         };
         PageResponseUserView: {
             content?: components["schemas"]["UserView"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        JobSummary: {
+            /** Format: uuid */
+            id?: string;
+            title?: string;
+            /** Format: uuid */
+            clientId?: string;
+            clientName?: string;
+            location?: string;
+            /** @enum {string} */
+            employmentType?: "FULL_TIME" | "PART_TIME" | "CONTRACT";
+            /** @enum {string} */
+            status?: "DRAFT" | "OPEN" | "ON_HOLD" | "CLOSED";
+            /** Format: int32 */
+            openings?: number;
+            ownerName?: string;
+            canEdit?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PageResponseJobSummary: {
+            content?: components["schemas"]["JobSummary"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        PipelineView: {
+            /** Format: uuid */
+            jobId?: string;
+            jobTitle?: string;
+            clientName?: string;
+            jobStatus?: string;
+            /** Format: int32 */
+            openings?: number;
+            /** Format: int64 */
+            hired?: number;
+            stages?: components["schemas"]["StageView"][];
+        };
+        StageView: {
+            /** @enum {string} */
+            status?: "NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
+            /** Format: int64 */
+            count?: number;
+            applications?: components["schemas"]["ApplicationView"][];
+        };
+        PageResponseClientView: {
+            content?: components["schemas"]["ClientView"][];
             /** Format: int32 */
             page?: number;
             /** Format: int32 */
@@ -580,6 +1003,29 @@ export interface components {
             totalElements?: number;
             /** Format: int32 */
             totalPages?: number;
+        };
+        PageResponseApplicationView: {
+            content?: components["schemas"]["ApplicationView"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        HistoryView: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            fromStatus?: "NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
+            /** @enum {string} */
+            toStatus?: "NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
+            changedByName?: string;
+            /** Format: date-time */
+            changedAt?: string;
+            comment?: string;
         };
     };
     responses: never;
@@ -617,6 +1063,32 @@ export interface operations {
         };
     };
     replaceSkills: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceJobSkillsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["JobView"];
+                };
+            };
+        };
+    };
+    replaceSkills_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -813,6 +1285,135 @@ export interface operations {
         parameters: {
             query?: {
                 q?: string;
+                status?: "DRAFT" | "OPEN" | "ON_HOLD" | "CLOSED";
+                clientId?: string;
+                ownerId?: string;
+                location?: string;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseJobSummary"];
+                };
+            };
+        };
+    };
+    create_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateJobRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["JobView"];
+                };
+            };
+        };
+    };
+    changeStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeJobStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["JobView"];
+                };
+            };
+        };
+    };
+    list_1: {
+        parameters: {
+            query?: {
+                q?: string;
+                active?: boolean;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseClientView"];
+                };
+            };
+        };
+    };
+    create_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateClientRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ClientView"];
+                };
+            };
+        };
+    };
+    search_2: {
+        parameters: {
+            query?: {
+                q?: string;
                 skillId?: string[];
                 location?: string;
                 status?: "ACTIVE" | "ARCHIVED" | "DO_NOT_CONTACT" | "ANONYMISED";
@@ -840,7 +1441,7 @@ export interface operations {
             };
         };
     };
-    create_2: {
+    create_4: {
         parameters: {
             query?: never;
             header?: never;
@@ -1112,6 +1713,84 @@ export interface operations {
             };
         };
     };
+    list_2: {
+        parameters: {
+            query?: {
+                jobId?: string;
+                candidateId?: string;
+                status?: "NEW" | "SCREENING" | "SHORTLISTED" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
+                ownerId?: string;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseApplicationView"];
+                };
+            };
+        };
+    };
+    create_5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApplicationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicationView"];
+                };
+            };
+        };
+    };
+    changeStatus_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StatusChangeResult"];
+                };
+            };
+        };
+    };
     get: {
         parameters: {
             query?: never;
@@ -1177,12 +1856,108 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CandidateView"];
+                    "*/*": components["schemas"]["JobView"];
                 };
             };
         };
     };
     update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateJobRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["JobView"];
+                };
+            };
+        };
+    };
+    get_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ClientView"];
+                };
+            };
+        };
+    };
+    update_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateClientRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ClientView"];
+                };
+            };
+        };
+    };
+    get_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CandidateView"];
+                };
+            };
+        };
+    };
+    update_3: {
         parameters: {
             query?: never;
             header?: never;
@@ -1208,6 +1983,50 @@ export interface operations {
             };
         };
     };
+    pipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PipelineView"];
+                };
+            };
+        };
+    };
+    forCandidate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                candidateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicationView"][];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -1224,6 +2043,50 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserSummary"];
+                };
+            };
+        };
+    };
+    get_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicationView"];
+                };
+            };
+        };
+    };
+    history: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HistoryView"][];
                 };
             };
         };

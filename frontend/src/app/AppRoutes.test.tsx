@@ -83,8 +83,8 @@ describe('route guards', () => {
 
 describe('navigation', () => {
   it('lists admin-only entries only for admins', () => {
-    expect(visibleNav(['RECRUITER']).map((i) => i.label)).toEqual(['Dashboard', 'Candidates'])
-    expect(visibleNav(['ADMIN']).map((i) => i.label)).toEqual(['Dashboard', 'Candidates', 'Users'])
+    expect(visibleNav(['RECRUITER']).map((i) => i.label)).toEqual(['Dashboard', 'Jobs', 'Candidates'])
+    expect(visibleNav(['ADMIN']).map((i) => i.label)).toEqual(['Dashboard', 'Jobs', 'Candidates', 'Users'])
     expect(visibleNav(['INTERVIEWER']).map((i) => i.label)).toEqual(['Dashboard'])
   })
 

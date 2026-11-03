@@ -35,3 +35,36 @@ export type CandidateSummary = Required<Omit<Schemas['CandidateSummary'], Summar
   Pick<Schemas['CandidateSummary'], SummaryOptional>
 
 export type NoteView = Required<Schemas['NoteView']>
+
+export type JobStatus = NonNullable<Schemas['JobView']['status']>
+export type EmploymentType = NonNullable<Schemas['JobView']['employmentType']>
+export type SkillImportance = NonNullable<Schemas['JobSkillView']['importance']>
+export type ApplicationStatus = NonNullable<Schemas['ApplicationView']['status']>
+export type RejectionReason = NonNullable<Schemas['ApplicationView']['rejectionReason']>
+
+export type ClientView = Required<Omit<Schemas['ClientView'], 'industry' | 'contactName' | 'contactEmail'>> &
+  Pick<Schemas['ClientView'], 'industry' | 'contactName' | 'contactEmail'>
+
+export type JobSkillView = Required<Omit<Schemas['JobSkillView'], 'minYears'>> & Pick<Schemas['JobSkillView'], 'minYears'>
+
+type JobViewOptional = 'description' | 'location' | 'salaryMin' | 'salaryMax' | 'currency' | 'openedAt' | 'closedAt'
+export type JobView = Required<Omit<Schemas['JobView'], JobViewOptional | 'skills'>> &
+  Pick<Schemas['JobView'], JobViewOptional> & { skills: JobSkillView[] }
+
+export type JobSummary = Required<Omit<Schemas['JobSummary'], 'location'>> & Pick<Schemas['JobSummary'], 'location'>
+
+type ApplicationOptional = 'candidateEmail' | 'candidateTitle' | 'clientName' | 'rejectionReason'
+export type ApplicationView = Required<Omit<Schemas['ApplicationView'], ApplicationOptional>> &
+  Pick<Schemas['ApplicationView'], ApplicationOptional>
+
+export type StatusChangeResult = { application: ApplicationView; jobCloseSuggested: boolean }
+export type StageView = { status: ApplicationStatus; count: number; applications: ApplicationView[] }
+export type PipelineView = {
+  jobId: string
+  jobTitle: string
+  clientName: string
+  jobStatus: JobStatus
+  openings: number
+  hired: number
+  stages: StageView[]
+}

@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "Invalid or expired token"),
     DUPLICATE_USER(HttpStatus.CONFLICT, "User already exists"),
     DUPLICATE_SKILL(HttpStatus.CONFLICT, "Skill already exists"),
+    DUPLICATE_CLIENT(HttpStatus.CONFLICT, "Client already exists"),
     INVALID_OPERATION(HttpStatus.UNPROCESSABLE_ENTITY, "Operation not allowed"),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not found"),
     DUPLICATE_CANDIDATE(HttpStatus.CONFLICT, "Candidate already exists"),

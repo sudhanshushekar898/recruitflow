@@ -33,6 +33,8 @@ services:
       DB_USER: recruitflow
       DB_PASSWORD: recruitflow
       MAIL_HOST: mailpit
+      # Synthetic demo data (clients, jobs, candidates, applications). Local only; off by default elsewhere.
+      RECRUITFLOW_DEMO_ENABLED: "true"
     ports:
       - "8080:8080"
     depends_on:

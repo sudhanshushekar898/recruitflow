@@ -13,9 +13,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 class JpaConfig {
 
+    /**
+     * Ticks in whole microseconds, the precision PostgreSQL stores, so a timestamp returned right after it is
+     * saved equals the one read back later.
+     */
     @Bean
     Clock clock() {
-        return Clock.systemUTC();
+        return Clock.tick(Clock.systemUTC(), java.time.Duration.ofNanos(1_000));
     }
 
     /** Fills createdAt/updatedAt with UTC instants from the application clock. */
