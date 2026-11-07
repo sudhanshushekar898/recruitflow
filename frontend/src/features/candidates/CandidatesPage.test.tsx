@@ -6,6 +6,9 @@ import { JAVA, pageOf, problem, renderAt, signIn, summary, userSummary } from '.
 import { server } from '../../test/server'
 import { CandidatesPage } from './CandidatesPage'
 
+/** The total is split across elements (bold number), so match the paragraph's full text. */
+const countText = (_: string, el: Element | null) => el?.tagName === 'P' && el.textContent === '12 candidates'
+
 function setup() {
   signIn(userSummary(['RECRUITER']))
   const requests: URLSearchParams[] = []
@@ -27,9 +30,10 @@ describe('CandidatesPage', () => {
 
     const link = await screen.findByRole('link', { name: 'Sam Patel' })
     expect(link).toHaveAttribute('href', '/candidates/cand-1')
-    expect(screen.getByText('Java, PostgreSQL')).toBeInTheDocument()
+    expect(within(screen.getByRole('table')).getByText('Java')).toBeInTheDocument()
+    expect(within(screen.getByRole('table')).getByText('PostgreSQL')).toBeInTheDocument()
     expect(within(screen.getByRole('table')).getByText('Do not contact')).toBeInTheDocument()
-    expect(screen.getByText('12 candidates')).toBeInTheDocument()
+    expect(screen.getByText(countText)).toBeInTheDocument()
   })
 
   it('sends keyword, location, experience, source and skill filters only when searching', async () => {
@@ -48,7 +52,7 @@ describe('CandidatesPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Search' }))
 
-    await screen.findByText('12 candidates')
+    await screen.findByText(countText)
     const last = requests.at(-1)!
     expect(last.get('q')).toBe('java dev')
     expect(last.get('location')).toBe('london')
@@ -76,7 +80,7 @@ describe('CandidatesPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    await screen.findByText('12 candidates')
+    await screen.findByText(countText)
     expect(requests.at(-1)!.get('page')).toBe('1')
   })
 

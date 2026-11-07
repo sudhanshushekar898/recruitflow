@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Alert, Badge, Button, Card, SelectField, Spinner, TextAreaField, TextField } from '../../components/ui'
+import { Alert, Avatar, Badge, Button, Card, SelectField, Spinner, TextAreaField, TextField } from '../../components/ui'
 import { isApiError } from '../../lib/apiClient'
 import type { CandidateView, LegalBasis } from '../../types'
 import { useCandidate, useCandidateMutations, useNotes } from './api'
@@ -43,9 +43,15 @@ function Header({ candidate }: { candidate: CandidateView }) {
     <div className="space-y-3">
       <Link to="/candidates" className="text-sm text-indigo-700 hover:underline">← All candidates</Link>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold">{candidate.firstName} {candidate.lastName}</h1>
-          <Badge tone={candidate.status === 'ACTIVE' ? 'green' : archived ? 'neutral' : 'amber'}>{STATUSES[candidate.status]}</Badge>
+        <div className="flex items-center gap-4">
+          <Avatar name={`${candidate.firstName} ${candidate.lastName}`} size="lg" />
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold tracking-tight">{candidate.firstName} {candidate.lastName}</h1>
+              <Badge tone={candidate.status === 'ACTIVE' ? 'green' : archived ? 'neutral' : 'amber'}>{STATUSES[candidate.status]}</Badge>
+            </div>
+            <p className="text-sm text-slate-500">{[candidate.currentTitle, candidate.location].filter(Boolean).join(' · ')}</p>
+          </div>
         </div>
         <div className="flex gap-2">
           {!archived && (

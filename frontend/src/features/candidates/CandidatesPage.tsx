@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Alert, Badge, Button, Card, Pagination, SelectField, Spinner, TextField } from '../../components/ui'
+import { SearchX, UserPlus } from 'lucide-react'
+import { Alert, Avatar, Badge, Button, Card, EmptyState, PageHeader, Pagination, SelectField, Spinner, TextField, linkButton, table } from '../../components/ui'
 import type { CandidateSource, CandidateStatus } from '../../types'
 import { SkillPicker } from '../skills/SkillPicker'
 import { type CandidateFilters, useCandidates } from './api'
@@ -19,15 +20,11 @@ export function CandidatesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Candidates</h1>
-        <Link
-          to="/candidates/new"
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          New candidate
-        </Link>
-      </div>
+      <PageHeader
+        title="Candidates"
+        subtitle="Search the talent pool by keyword, skills, location and experience"
+        actions={<Link to="/candidates/new" className={linkButton()}><UserPlus className="h-4 w-4" aria-hidden />New candidate</Link>}
+      />
 
       <Card>
         <form
@@ -109,41 +106,51 @@ export function CandidatesPage() {
         </form>
       </Card>
 
-      <Card>
+      <Card padded={false}>
         {isPending && <Spinner />}
-        {isError && <Alert>{error instanceof Error ? error.message : 'Could not load candidates.'}</Alert>}
-        {data && data.content.length === 0 && <p className="py-6 text-center text-slate-500">No candidates match your search.</p>}
+        {isError && <div className="p-5"><Alert>{error instanceof Error ? error.message : 'Could not load candidates.'}</Alert></div>}
+        {data && data.content.length === 0 && (
+          <EmptyState icon={SearchX} title="No candidates match your search.">Try fewer filters or a different keyword.</EmptyState>
+        )}
         {data && data.content.length > 0 && (
           <>
-            <p className="mb-3 text-sm text-slate-600" aria-live="polite">
-              {data.totalElements} candidate{data.totalElements === 1 ? '' : 's'}
+            <p className="border-b border-slate-100 px-5 py-3 text-sm text-slate-500" aria-live="polite">
+              <span className="font-semibold text-slate-900">{data.totalElements}</span> candidate{data.totalElements === 1 ? '' : 's'}
             </p>
-            <div className={`overflow-x-auto ${isFetching ? 'opacity-60' : ''}`}>
-              <table className="min-w-full text-left text-sm">
-                <thead className="border-b border-slate-200 text-slate-500">
+            <div className={`${table.wrap} ${isFetching ? 'opacity-60' : ''}`}>
+              <table className={table.table}>
+                <thead className={table.head}>
                   <tr>
-                    <th className="py-2 pr-4 font-medium">Name</th>
-                    <th className="py-2 pr-4 font-medium">Title</th>
-                    <th className="py-2 pr-4 font-medium">Location</th>
-                    <th className="py-2 pr-4 font-medium">Years</th>
-                    <th className="py-2 pr-4 font-medium">Skills</th>
-                    <th className="py-2 font-medium">Status</th>
+                    <th className={table.th}>Name</th>
+                    <th className={table.th}>Title</th>
+                    <th className={table.th}>Location</th>
+                    <th className={table.th}>Years</th>
+                    <th className={table.th}>Skills</th>
+                    <th className={table.th}>Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className={table.body}>
                   {data.content.map((c) => (
-                    <tr key={c.id}>
-                      <td className="py-2 pr-4">
-                        <Link to={`/candidates/${c.id}`} className="font-medium text-indigo-700 hover:underline">
-                          {c.fullName}
-                        </Link>
-                        <div className="text-xs text-slate-500">{c.email}</div>
+                    <tr key={c.id} className={table.row}>
+                      <td className={table.td}>
+                        <div className="flex items-center gap-3">
+                          <Avatar name={c.fullName} />
+                          <div>
+                            <Link to={`/candidates/${c.id}`} className="font-semibold text-slate-900 hover:text-indigo-600">{c.fullName}</Link>
+                            <div className="text-xs text-slate-500">{c.email}</div>
+                          </div>
+                        </div>
                       </td>
-                      <td className="py-2 pr-4">{c.currentTitle ?? '—'}</td>
-                      <td className="py-2 pr-4">{c.location ?? '—'}</td>
-                      <td className="py-2 pr-4">{c.yearsExperience ?? '—'}</td>
-                      <td className="py-2 pr-4">{c.skills.slice(0, 4).join(', ')}{c.skills.length > 4 ? ` +${c.skills.length - 4}` : ''}</td>
-                      <td className="py-2">
+                      <td className={`${table.td} text-slate-700`}>{c.currentTitle ?? '—'}</td>
+                      <td className={`${table.td} text-slate-600`}>{c.location ?? '—'}</td>
+                      <td className={`${table.td} tabular-nums text-slate-600`}>{c.yearsExperience ?? '—'}</td>
+                      <td className={table.td}>
+                        <div className="flex max-w-xs flex-wrap gap-1">
+                          {c.skills.slice(0, 3).map((s) => <span key={s} className="rounded-md bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700">{s}</span>)}
+                          {c.skills.length > 3 && <span className="px-1 text-xs text-slate-400">+{c.skills.length - 3}</span>}
+                        </div>
+                      </td>
+                      <td className={table.td}>
                         <Badge tone={c.status === 'ACTIVE' ? 'green' : c.status === 'ARCHIVED' ? 'neutral' : 'amber'}>{STATUSES[c.status]}</Badge>
                       </td>
                     </tr>

@@ -1,6 +1,7 @@
+import { Building2, Plus, SearchX } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Alert, Badge, Button, Card, Pagination, SelectField, Spinner, TextField } from '../../components/ui'
+import { Alert, Avatar, Badge, Button, Card, EmptyState, PageHeader, Pagination, SelectField, Spinner, TextField, linkButton, table } from '../../components/ui'
 import type { JobStatus } from '../../types'
 import { type JobFilters, useClients, useJobs } from './api'
 import { EMPLOYMENT, JOB_STATUSES, JOB_TONE } from './labels'
@@ -15,13 +16,16 @@ export function JobsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Jobs</h1>
-        <div className="flex gap-2">
-          <Link to="/clients" className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50">Clients</Link>
-          <Link to="/jobs/new" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">New job</Link>
-        </div>
-      </div>
+      <PageHeader
+        title="Jobs"
+        subtitle="Every role you are hiring for, across all clients"
+        actions={
+          <>
+            <Link to="/clients" className={linkButton('secondary')}><Building2 className="h-4 w-4" aria-hidden />Clients</Link>
+            <Link to="/jobs/new" className={linkButton()}><Plus className="h-4 w-4" aria-hidden />New job</Link>
+          </>
+        }
+      />
 
       <Card>
         <form
@@ -32,7 +36,7 @@ export function JobsPage() {
             setApplied({ ...draft, page: 0 })
           }}
         >
-          <TextField label="Keyword" value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} hint="Title or location" />
+          <TextField label="Keyword" value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="Title or location" />
           <SelectField label="Status" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value as JobStatus | '' })}>
             <option value="">Any status</option>
             {Object.entries(JOB_STATUSES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
@@ -43,39 +47,49 @@ export function JobsPage() {
           </SelectField>
           <div className="flex gap-2">
             <Button type="submit">Search</Button>
-            <Button type="button" variant="secondary" onClick={() => { setDraft(EMPTY); setApplied(EMPTY) }}>Clear</Button>
+            <Button type="button" variant="ghost" onClick={() => { setDraft(EMPTY); setApplied(EMPTY) }}>Clear</Button>
           </div>
         </form>
       </Card>
 
-      <Card>
+      <Card padded={false}>
         {isPending && <Spinner />}
-        {isError && <Alert>{error instanceof Error ? error.message : 'Could not load jobs.'}</Alert>}
-        {data && data.content.length === 0 && <p className="py-6 text-center text-slate-500">No jobs match your search.</p>}
+        {isError && <div className="p-5"><Alert>{error instanceof Error ? error.message : 'Could not load jobs.'}</Alert></div>}
+        {data && data.content.length === 0 && <EmptyState icon={SearchX} title="No jobs match your search." />}
         {data && data.content.length > 0 && (
-          <div className={`overflow-x-auto ${isFetching ? 'opacity-60' : ''}`}>
-            <table className="min-w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-slate-500">
+          <div className={`${table.wrap} ${isFetching ? 'opacity-60' : ''}`}>
+            <table className={table.table}>
+              <thead className={table.head}>
                 <tr>
-                  <th className="py-2 pr-4 font-medium">Job</th>
-                  <th className="py-2 pr-4 font-medium">Client</th>
-                  <th className="py-2 pr-4 font-medium">Location</th>
-                  <th className="py-2 pr-4 font-medium">Type</th>
-                  <th className="py-2 pr-4 font-medium">Openings</th>
-                  <th className="py-2 pr-4 font-medium">Owner</th>
-                  <th className="py-2 font-medium">Status</th>
+                  <th className={table.th}>Job</th>
+                  <th className={table.th}>Location</th>
+                  <th className={table.th}>Type</th>
+                  <th className={table.th}>Openings</th>
+                  <th className={table.th}>Owner</th>
+                  <th className={table.th}>Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className={table.body}>
                 {data.content.map((j) => (
-                  <tr key={j.id}>
-                    <td className="py-2 pr-4"><Link to={`/jobs/${j.id}`} className="font-medium text-indigo-700 hover:underline">{j.title}</Link></td>
-                    <td className="py-2 pr-4">{j.clientName}</td>
-                    <td className="py-2 pr-4">{j.location ?? '—'}</td>
-                    <td className="py-2 pr-4">{EMPLOYMENT[j.employmentType]}</td>
-                    <td className="py-2 pr-4">{j.openings}</td>
-                    <td className="py-2 pr-4">{j.ownerName}</td>
-                    <td className="py-2"><Badge tone={JOB_TONE[j.status]}>{JOB_STATUSES[j.status]}</Badge></td>
+                  <tr key={j.id} className={table.row}>
+                    <td className={table.td}>
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                          <Building2 className="h-4 w-4" aria-hidden />
+                        </span>
+                        <div>
+                          <Link to={`/jobs/${j.id}`} className="font-semibold text-slate-900 hover:text-indigo-600">{j.title}</Link>
+                          <div className="text-xs text-slate-500">{j.clientName}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className={`${table.td} text-slate-600`}>{j.location ?? '—'}</td>
+                    <td className={`${table.td} text-slate-600`}>{EMPLOYMENT[j.employmentType]}</td>
+                    <td className={`${table.td} tabular-nums text-slate-600`}>{j.openings}</td>
+                    <td className={table.td}>
+                      <div className="flex items-center gap-2 text-slate-700"><Avatar name={j.ownerName} size="sm" />{j.ownerName}</div>
+                    </td>
+                    <td className={table.td}><Badge tone={JOB_TONE[j.status]}>{JOB_STATUSES[j.status]}</Badge></td>
                   </tr>
                 ))}
               </tbody>

@@ -1,7 +1,8 @@
+import type { Tone } from '../../components/ui'
 import type { ApplicationStatus, EmploymentType, JobStatus, RejectionReason, SkillImportance } from '../../types'
 
 export const JOB_STATUSES: Record<JobStatus, string> = { DRAFT: 'Draft', OPEN: 'Open', ON_HOLD: 'On hold', CLOSED: 'Closed' }
-export const JOB_TONE: Record<JobStatus, 'neutral' | 'green' | 'amber' | 'red'> = { DRAFT: 'neutral', OPEN: 'green', ON_HOLD: 'amber', CLOSED: 'red' }
+export const JOB_TONE: Record<JobStatus, Tone> = { DRAFT: 'neutral', OPEN: 'green', ON_HOLD: 'amber', CLOSED: 'red' }
 export const JOB_ACTIONS: Record<JobStatus, string> = { DRAFT: 'Back to draft', OPEN: 'Open job', ON_HOLD: 'Put on hold', CLOSED: 'Close job' }
 
 export const EMPLOYMENT: Record<EmploymentType, string> = { FULL_TIME: 'Full time', PART_TIME: 'Part time', CONTRACT: 'Contract' }
@@ -17,8 +18,14 @@ export const STAGE_LABEL: Record<ApplicationStatus, string> = {
   REJECTED: 'Rejected',
   WITHDRAWN: 'Withdrawn',
 }
-export const STAGE_TONE: Record<ApplicationStatus, 'neutral' | 'green' | 'amber' | 'red'> = {
-  NEW: 'neutral', SCREENING: 'neutral', SHORTLISTED: 'neutral', INTERVIEW: 'amber', OFFER: 'amber', HIRED: 'green', REJECTED: 'red', WITHDRAWN: 'neutral',
+export const STAGE_TONE: Record<ApplicationStatus, Tone> = {
+  NEW: 'neutral', SCREENING: 'blue', SHORTLISTED: 'violet', INTERVIEW: 'violet', OFFER: 'amber', HIRED: 'green', REJECTED: 'red', WITHDRAWN: 'neutral',
+}
+
+/** Accent colour along the top of each pipeline column. */
+export const STAGE_ACCENT: Record<ApplicationStatus, string> = {
+  NEW: 'border-t-slate-400', SCREENING: 'border-t-sky-500', SHORTLISTED: 'border-t-indigo-500', INTERVIEW: 'border-t-violet-500',
+  OFFER: 'border-t-amber-500', HIRED: 'border-t-emerald-500', REJECTED: 'border-t-rose-500', WITHDRAWN: 'border-t-slate-300',
 }
 
 export const REASONS: Record<RejectionReason, string> = {
