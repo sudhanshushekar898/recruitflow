@@ -14,6 +14,7 @@ Candidates, client jobs, a visual hiring pipeline, interviews and blind feedback
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 ![Tests](https://img.shields.io/badge/tests-236%20passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+[![CI](https://github.com/sudhanshushekar898/recruitflow/actions/workflows/ci.yml/badge.svg)](https://github.com/sudhanshushekar898/recruitflow/actions/workflows/ci.yml)
 
 </div>
 
@@ -154,7 +155,7 @@ That's all you need to run the app. For local development you also need Java 21 
 ### Run everything with Docker
 
 ```bash
-git clone <this repository>
+git clone https://github.com/sudhanshushekar898/recruitflow.git
 cd recruitflow
 docker compose --profile full up -d --build
 ```
@@ -275,4 +276,4 @@ recruitflow/
 
 ## License
 
-Released under the [MIT License](LICENSE). Built by **sudha**.
+Released under the [MIT License](LICENSE). Built by **sudha** ([@sudhanshushekar898](https://github.com/sudhanshushekar898)).
