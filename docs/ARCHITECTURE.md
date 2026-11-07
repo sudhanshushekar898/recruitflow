@@ -23,7 +23,7 @@ Supersedes: the earlier "Recruitment CRM" architecture proposal (v1).
 | 12 | Milestones were a flat list | **Phased milestones with exit criteria and part-time effort estimates** | More realistic planning |
 | 13 | ER described in prose | **Mermaid ER diagrams** per module plus overall | Reviewable and rendered by GitHub |
 | 14 | API examples only | **Full API contract conventions, error catalogue, endpoint tables** | Contract-first approach and OpenAPI generation |
-| 15 | Single doc | **`CLAUDE.md`** as the living project instruction file | Persistent engineering rules for every session |
+| 15 | Single doc | **`CONTRIBUTING.md`** as the living engineering-rules file | Persistent conventions every change follows |
 
 ---
 
@@ -963,7 +963,7 @@ Skill aliases (`skill_aliases`) normalise names ("postgres" = "postgresql") befo
 
 ### 12.3 Optional augmentation (O2, separate feature flag, off by default)
 
-- `SkillMatcher` port with `RulesSkillMatcher` (default) and `LlmSkillMatcher` (adapter around the Claude API or any provider). The LLM only produces a **short natural-language rationale and flags semantically related skills** (for example "Spring Boot implies Spring Framework") that the rules engine can convert into *suggested alias links* for an admin to approve. It never produces the score.
+- `SkillMatcher` port with `RulesSkillMatcher` (default) and `LlmSkillMatcher` (adapter around any hosted LLM provider). The LLM only produces a **short natural-language rationale and flags semantically related skills** (for example "Spring Boot implies Spring Framework") that the rules engine can convert into *suggested alias links* for an admin to approve. It never produces the score.
 - Prompt and response are logged without PII, with timeouts, retries and a circuit breaker (Resilience4j). Fallback to rules-only on any failure.
 - Embeddings and `pgvector` are explicitly **out of scope** unless a measured need appears (ADR-017).
 
@@ -999,7 +999,7 @@ frontend/src/
 
 ```
 recruitflow/
-├─ CLAUDE.md                      # persistent project instructions (kept current)
+├─ CONTRIBUTING.md                # engineering rules and conventions (kept current)
 ├─ README.md                      # portfolio entry: screenshots, architecture, how to run
 ├─ docs/
 │  ├─ ARCHITECTURE.md             # this document
@@ -1108,7 +1108,7 @@ Test data uses builders/object mothers and a seeded synthetic data generator (al
 
 ### 17.2 Definition of Done (every milestone and PR)
 
-Code compiles with warnings-as-errors for new modules → unit and integration tests added and green → Flyway migration included if the schema changed → OpenAPI updated and drift check green → authorization tests for any new endpoint → audit events for sensitive actions → no PII in logs → docs/ADR/`CLAUDE.md` updated if conventions changed → CI green → merged via PR.
+Code compiles with warnings-as-errors for new modules → unit and integration tests added and green → Flyway migration included if the schema changed → OpenAPI updated and drift check green → authorization tests for any new endpoint → audit events for sensitive actions → no PII in logs → docs/ADR/`CONTRIBUTING.md` updated if conventions changed → CI green → merged via PR.
 
 ### 17.3 Key risks
 
@@ -1133,7 +1133,7 @@ Effort assumes one developer working roughly 10–12 hours per week. Every miles
 
 | M | Weeks | Scope | Exit criteria |
 |---|---|---|---|
-| **M0** Foundation | 1 | Repo, Maven project, Flyway, Compose (Postgres, MinIO, Mailpit), shared error handling, MDC logging, health checks, OpenAPI, ArchUnit, CI v1, `CLAUDE.md`, ADR folder | `docker compose up` works. CI green on empty app |
+| **M0** Foundation | 1 | Repo, Maven project, Flyway, Compose (Postgres, MinIO, Mailpit), shared error handling, MDC logging, health checks, OpenAPI, ArchUnit, CI v1, `CONTRIBUTING.md`, ADR folder | `docker compose up` works. CI green on empty app |
 | **M1** Identity | 2 | Users, roles, login, JWT RS256, refresh rotation/reuse detection, lockout, admin user API, invite and reset (SMTP via Mailpit), bootstrap admin, audit hook | Auth integration tests incl. reuse-detection. Authorization matrix tests |
 | **M2** Frontend shell | 1 | Vite/TS/Tailwind, router, login, token refresh, guards, layout, API type generation | Log in, role-aware navigation |
 | **M3** Skills and candidates | 2 | Skill catalog, candidate CRUD, skills, notes, consent/retention fields, dedup, archive, search/filter/pagination (API + UI) | 100k-row search under budget. Duplicate handling tested |

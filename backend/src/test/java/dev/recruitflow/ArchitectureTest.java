@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Module and layering rules from CLAUDE.md. Do not weaken these to make code compile.
+ * Module and layering rules from CONTRIBUTING.md. Do not weaken these to make code compile.
  * Plain JUnit tests (not the ArchUnit JUnit engine) so Surefire counts and fails them reliably.
  */
 class ArchitectureTest {

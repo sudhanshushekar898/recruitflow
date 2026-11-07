@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <!-- Never log request bodies, tokens, or PII. See CLAUDE.md "Security and privacy rules". -->
+  <!-- Never log request bodies, tokens, or PII. See CONTRIBUTING.md "Security and privacy rules". -->
   <springProfile name="local | test">
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>

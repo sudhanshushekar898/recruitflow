@@ -9,3 +9,6 @@ dist/
 !.env.example
 *.log
 .DS_Store
+
+# Local assistant notes (not part of the project)
+CLAUDE.md
