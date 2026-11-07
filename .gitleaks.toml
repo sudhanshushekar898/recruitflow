@@ -1,0 +1,20 @@
+title = "RecruitFlow secret scanning"
+
+# Keep every default gitleaks rule.
+[extend]
+useDefault = true
+
+# Synthetic passwords used only by tests, the local profile and the demo-data seeder.
+# They are documented in the README, never used outside a developer machine or CI,
+# and listed exactly so that any other password-like string is still reported.
+[allowlist]
+description = "Documented synthetic test and demo passwords"
+regexTarget = "secret"
+regexes = [
+  '''^A-Fresh-Passphrase-2026$''',
+  '''^Another-Passphrase-2026$''',
+  '''^Brand-New-Passphrase-77$''',
+  '''^Correct-Horse-Battery-9$''',
+  '''^Demo-Passphrase-2026$''',
+  '''^Local-Admin-Pass-2026$''',
+]
