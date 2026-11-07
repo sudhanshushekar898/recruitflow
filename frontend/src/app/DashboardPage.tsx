@@ -3,6 +3,8 @@ import { Activity, Briefcase, CalendarClock, FileSignature, Users } from 'lucide
 import { Link } from 'react-router-dom'
 import { Avatar, Badge, Card, EmptyState, PageHeader, Spinner, StatCard } from '../components/ui'
 import { useAuth } from '../features/auth/useAuth'
+import { useMyInterviews } from '../features/interviews/api'
+import { InterviewCard } from '../features/interviews/InterviewCard'
 import { useRecentApplications } from '../features/jobs/api'
 import { STAGE_LABEL, STAGE_TONE, daysSince } from '../features/jobs/labels'
 import { api } from '../lib/apiClient'
@@ -28,16 +30,34 @@ export function DashboardPage() {
   return (
     <div className="space-y-8">
       <PageHeader title={`Welcome${firstName ? `, ${firstName}` : ''}`} subtitle={today} />
-      {recruiter ? (
-        <RecruiterDashboard />
-      ) : (
-        <Card>
-          <EmptyState icon={CalendarClock} title="Your interviews will appear here">
-            Once a recruiter adds you to an interview panel, you will see it here and give your feedback.
-          </EmptyState>
+      {recruiter ? <RecruiterDashboard /> : <InterviewerDashboard />}
+    </div>
+  )
+}
+
+function InterviewerDashboard() {
+  const upcoming = useMyInterviews('upcoming')
+  const past = useMyInterviews('past')
+  const due = past.data?.filter((i) => i.canGiveFeedback) ?? []
+  return (
+    <>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Link to="/my-interviews"><StatCard label="Upcoming interviews" value={upcoming.data?.length} icon={CalendarClock} tone="violet" /></Link>
+        <Link to="/my-interviews"><StatCard label="Feedback due" value={past.data ? due.length : undefined} icon={FileSignature} tone="amber" /></Link>
+      </div>
+      {due.length > 0 && (
+        <Card title="Feedback due" description="Your colleagues' feedback stays hidden until you give yours" padded={false}>
+          <ul className="divide-y divide-slate-100">{due.map((i) => <li key={i.id}><InterviewCard interview={i} /></li>)}</ul>
         </Card>
       )}
-    </div>
+      <Card title="Coming up" padded={false}>
+        {upcoming.isPending && <Spinner />}
+        {upcoming.data?.length === 0 && (
+          <EmptyState icon={CalendarClock} title="Nothing scheduled">When a recruiter adds you to an interview panel it appears here.</EmptyState>
+        )}
+        <ul className="divide-y divide-slate-100">{upcoming.data?.map((i) => <li key={i.id}><InterviewCard interview={i} /></li>)}</ul>
+      </Card>
+    </>
   )
 }
 

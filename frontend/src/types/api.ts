@@ -164,7 +164,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/clients": {
+    "/api/v1/interviews": {
         parameters: {
             query?: never;
             header?: never;
@@ -172,6 +172,70 @@ export interface paths {
             cookie?: never;
         };
         get: operations["list_1"];
+        put?: never;
+        post: operations["schedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/interviews/{id}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["feedback"];
+        put?: never;
+        post: operations["submitFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/interviews/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/interviews/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_2"];
         put?: never;
         post: operations["create_3"];
         delete?: never;
@@ -363,7 +427,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_2"];
+        get: operations["list_3"];
         put?: never;
         post: operations["create_5"];
         delete?: never;
@@ -420,7 +484,7 @@ export interface paths {
         patch: operations["update_1"];
         trace?: never;
     };
-    "/api/v1/clients/{id}": {
+    "/api/v1/interviews/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -428,6 +492,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["get_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["reschedule"];
+        trace?: never;
+    };
+    "/api/v1/clients/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_3"];
         put?: never;
         post?: never;
         delete?: never;
@@ -443,7 +523,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_3"];
+        get: operations["get_4"];
         put?: never;
         post?: never;
         delete?: never;
@@ -460,6 +540,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["pipeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/interviews/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/interviews/interviewers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["interviewers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -507,7 +619,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_4"];
+        get: operations["get_5"];
         put?: never;
         post?: never;
         delete?: never;
@@ -725,6 +837,89 @@ export interface components {
             /** @enum {string} */
             toStatus: "DRAFT" | "OPEN" | "ON_HOLD" | "CLOSED";
         };
+        ParticipantRequest: {
+            /** Format: uuid */
+            userId: string;
+            /** @enum {string} */
+            role?: "LEAD" | "PANEL";
+        };
+        ScheduleRequest: {
+            /** Format: uuid */
+            applicationId: string;
+            /** @enum {string} */
+            type: "PHONE" | "VIDEO" | "ONSITE" | "TECHNICAL";
+            /** Format: date-time */
+            start: string;
+            /** Format: date-time */
+            end: string;
+            locationOrLink?: string;
+            notes?: string;
+            participants: components["schemas"]["ParticipantRequest"][];
+        };
+        InterviewView: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            applicationId?: string;
+            /** Format: uuid */
+            candidateId?: string;
+            candidateName?: string;
+            candidateTitle?: string;
+            /** Format: uuid */
+            jobId?: string;
+            jobTitle?: string;
+            clientName?: string;
+            applicationStatus?: string;
+            /** Format: int32 */
+            roundNo?: number;
+            /** @enum {string} */
+            type?: "PHONE" | "VIDEO" | "ONSITE" | "TECHNICAL";
+            /** Format: date-time */
+            scheduledStart?: string;
+            /** Format: date-time */
+            scheduledEnd?: string;
+            locationOrLink?: string;
+            /** @enum {string} */
+            status?: "SCHEDULED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+            notes?: string;
+            participants?: components["schemas"]["ParticipantView"][];
+            canManage?: boolean;
+            canGiveFeedback?: boolean;
+            /** Format: int64 */
+            version?: number;
+        };
+        ParticipantView: {
+            /** Format: uuid */
+            userId?: string;
+            name?: string;
+            /** @enum {string} */
+            role?: "LEAD" | "PANEL";
+            feedbackSubmitted?: boolean;
+        };
+        FeedbackRequest: {
+            /** Format: int32 */
+            rating?: number;
+            /** @enum {string} */
+            recommendation: "STRONG_YES" | "YES" | "NO" | "STRONG_NO";
+            strengths?: string;
+            concerns?: string;
+        };
+        FeedbackView: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            interviewerId?: string;
+            interviewerName?: string;
+            /** Format: int32 */
+            rating?: number;
+            /** @enum {string} */
+            recommendation?: "STRONG_YES" | "YES" | "NO" | "STRONG_NO";
+            strengths?: string;
+            concerns?: string;
+            /** Format: date-time */
+            submittedAt?: string;
+            mine?: boolean;
+        };
         CreateClientRequest: {
             name: string;
             industry?: string;
@@ -880,6 +1075,19 @@ export interface components {
             /** Format: int64 */
             version: number;
         };
+        RescheduleRequest: {
+            /** Format: date-time */
+            start?: string;
+            /** Format: date-time */
+            end?: string;
+            /** @enum {string} */
+            type?: "PHONE" | "VIDEO" | "ONSITE" | "TECHNICAL";
+            locationOrLink?: string;
+            notes?: string;
+            participants?: components["schemas"]["ParticipantRequest"][];
+            /** Format: int64 */
+            version: number;
+        };
         UpdateClientRequest: {
             name?: string;
             industry?: string;
@@ -965,6 +1173,28 @@ export interface components {
             /** Format: int64 */
             count?: number;
             applications?: components["schemas"]["ApplicationView"][];
+        };
+        PageResponseInterviewView: {
+            content?: components["schemas"]["InterviewView"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        FeedbackList: {
+            feedback?: components["schemas"]["FeedbackView"][];
+            blinded?: boolean;
+            /** Format: int32 */
+            hiddenCount?: number;
+        };
+        Interviewer: {
+            /** Format: uuid */
+            id?: string;
+            name?: string;
         };
         PageResponseClientView: {
             content?: components["schemas"]["ClientView"][];
@@ -1363,6 +1593,151 @@ export interface operations {
     list_1: {
         parameters: {
             query?: {
+                from?: string;
+                to?: string;
+                status?: "SCHEDULED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+                interviewerId?: string;
+                applicationId?: string;
+                page?: number;
+                size?: number;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseInterviewView"];
+                };
+            };
+        };
+    };
+    schedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InterviewView"];
+                };
+            };
+        };
+    };
+    feedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FeedbackList"];
+                };
+            };
+        };
+    };
+    submitFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FeedbackView"];
+                };
+            };
+        };
+    };
+    complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InterviewView"];
+                };
+            };
+        };
+    };
+    cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InterviewView"];
+                };
+            };
+        };
+    };
+    list_2: {
+        parameters: {
+            query?: {
                 q?: string;
                 active?: boolean;
                 page?: number;
@@ -1713,7 +2088,7 @@ export interface operations {
             };
         };
     };
-    list_2: {
+    list_3: {
         parameters: {
             query?: {
                 jobId?: string;
@@ -1904,6 +2279,54 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    "*/*": components["schemas"]["InterviewView"];
+                };
+            };
+        };
+    };
+    reschedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RescheduleRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InterviewView"];
+                };
+            };
+        };
+    };
+    get_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
                     "*/*": components["schemas"]["ClientView"];
                 };
             };
@@ -1935,7 +2358,7 @@ export interface operations {
             };
         };
     };
-    get_3: {
+    get_4: {
         parameters: {
             query?: never;
             header?: never;
@@ -2005,6 +2428,48 @@ export interface operations {
             };
         };
     };
+    mine: {
+        parameters: {
+            query?: {
+                scope?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InterviewView"][];
+                };
+            };
+        };
+    };
+    interviewers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Interviewer"][];
+                };
+            };
+        };
+    };
     forCandidate: {
         parameters: {
             query?: never;
@@ -2047,7 +2512,7 @@ export interface operations {
             };
         };
     };
-    get_4: {
+    get_5: {
         parameters: {
             query?: never;
             header?: never;

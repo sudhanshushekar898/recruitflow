@@ -22,13 +22,18 @@ abstract class WorkflowTestBase extends AbstractIntegrationTest {
     protected String interviewer;
     protected UUID recruiterAId;
     protected UUID recruiterBId;
+    protected UUID interviewerId;
+    protected UUID interviewer2Id;
+    protected String interviewer2;
 
     @BeforeEach
     void createStaff() throws Exception {
         createUser("admin@example.com", STRONG_PASSWORD, Role.ADMIN);
         recruiterAId = createUser("recruiter.a@example.com", STRONG_PASSWORD, Role.RECRUITER).getId();
         recruiterBId = createUser("recruiter.b@example.com", STRONG_PASSWORD, Role.RECRUITER).getId();
-        createUser("viewer@example.com", STRONG_PASSWORD, Role.INTERVIEWER);
+        interviewerId = createUser("viewer@example.com", STRONG_PASSWORD, Role.INTERVIEWER).getId();
+        interviewer2Id = createUser("viewer2@example.com", STRONG_PASSWORD, Role.INTERVIEWER).getId();
+        interviewer2 = bearer("viewer2@example.com", STRONG_PASSWORD);
         admin = bearer("admin@example.com", STRONG_PASSWORD);
         recruiterA = bearer("recruiter.a@example.com", STRONG_PASSWORD);
         recruiterB = bearer("recruiter.b@example.com", STRONG_PASSWORD);

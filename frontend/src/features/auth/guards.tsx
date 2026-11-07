@@ -6,11 +6,16 @@ import { useAuth } from './useAuth'
 
 /** Signed-in users only. A user who must change their password is held on that page until they do. */
 export function RequireAuth() {
-  const { status, user } = useAuth()
+  const { status, user, signedOut } = useAuth()
   const location = useLocation()
 
   if (status === 'loading') return <Spinner label="Restoring session" />
-  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />
+  if (!user) {
+    // Visitors and people who just signed out see the product homepage. Only an expired session (or a deep
+    // link) returns to the page after sign-in, so the next person never lands on someone else's last page.
+    if (signedOut || location.pathname === '/') return <Navigate to="/welcome" replace />
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />
+  }
   if (user.mustChangePassword && location.pathname !== '/change-password') {
     return <Navigate to="/change-password" replace />
   }

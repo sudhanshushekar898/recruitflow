@@ -2,6 +2,9 @@ import { Outlet, Route, Routes } from 'react-router-dom'
 import { CandidateDetailPage } from '../features/candidates/CandidateDetailPage'
 import { CandidateFormPage } from '../features/candidates/CandidateFormPage'
 import { CandidatesPage } from '../features/candidates/CandidatesPage'
+import { LandingPage } from '../features/landing/LandingPage'
+import { InterviewDetailPage } from '../features/interviews/InterviewDetailPage'
+import { InterviewsPage, MyInterviewsPage } from '../features/interviews/InterviewsPages'
 import { ClientsPage } from '../features/jobs/ClientsPage'
 import { JobDetailPage } from '../features/jobs/JobDetailPage'
 import { JobFormPage } from '../features/jobs/JobFormPage'
@@ -27,6 +30,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route element={<PublicOnly />}>
+        <Route path="/welcome" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -56,7 +60,11 @@ export function AppRoutes() {
             <Route path="/jobs/:id/edit" element={<JobFormPage />} />
             <Route path="/jobs/:id/pipeline" element={<PipelinePage />} />
             <Route path="/clients" element={<ClientsPage />} />
+            <Route path="/interviews" element={<InterviewsPage />} />
           </Route>
+          {/* Open to every role: the service only shows interviews the user sits on (or all, for recruiters). */}
+          <Route path="/my-interviews" element={<MyInterviewsPage />} />
+          <Route path="/interviews/:id" element={<InterviewDetailPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>

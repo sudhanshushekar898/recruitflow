@@ -32,4 +32,23 @@ public class UserLookup {
     public boolean exists(UUID id) {
         return users.existsById(id);
     }
+
+    /** Enabled users that may sit on an interview panel, with their names, for the scheduling form. */
+    public record Interviewer(UUID id, String name) {
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<Interviewer> interviewers() {
+        return users.findAll().stream()
+                .filter(u -> u.isEnabled() && u.hasPassword() && u.getRoles().contains(dev.recruitflow.identity.domain.Role.INTERVIEWER))
+                .sorted(java.util.Comparator.comparing(User::getFullName))
+                .map(u -> new Interviewer(u.getId(), u.getFullName()))
+                .toList();
+    }
+
+    /** True if every id belongs to an enabled user. */
+    @Transactional(readOnly = true)
+    public boolean allEnabled(Collection<UUID> ids) {
+        return users.findAllById(ids).stream().filter(User::isEnabled).count() == ids.size();
+    }
 }

@@ -11,6 +11,7 @@ export function useAuth() {
   return {
     status: state.status,
     user: state.user,
+    signedOut: state.status === 'anonymous' && state.signedOut,
     hasAnyRole: (...roles: Role[]) => state.user?.roles.some((role) => roles.includes(role)) ?? false,
     async login(email: string, password: string) {
       const data = await api<LoginResponse>('/api/v1/auth/login', { method: 'POST', body: { email, password }, auth: false })
@@ -31,7 +32,7 @@ export function useAuth() {
       } catch {
         // The local session is cleared regardless; a failed call only leaves a stale server-side token to expire.
       } finally {
-        authStore.clear()
+        authStore.signOut()
         queryClient.clear()
       }
     },

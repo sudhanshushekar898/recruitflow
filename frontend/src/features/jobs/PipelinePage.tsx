@@ -1,4 +1,5 @@
-import { ArrowLeft, Clock, GripVertical, UserPlus, X } from 'lucide-react'
+import { ArrowLeft, CalendarPlus, Clock, GripVertical, UserPlus, X } from 'lucide-react'
+import { ScheduleDialog } from '../interviews/ScheduleDialog'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Alert, Avatar, Badge, Button, Card, SelectField, Spinner, TextAreaField, TextField } from '../../components/ui'
@@ -18,6 +19,7 @@ export function PipelinePage() {
   const [message, setMessage] = useState<{ tone: 'error' | 'success' | 'info'; text: string } | null>(null)
   const [rejecting, setRejecting] = useState<ApplicationView | null>(null)
   const [dragOver, setDragOver] = useState<ApplicationStatus | null>(null)
+  const [scheduling, setScheduling] = useState<ApplicationView | null>(null)
 
   if (isPending) return <Spinner />
   if (isError || !board) return <Alert>This job could not be loaded.</Alert>
@@ -126,6 +128,12 @@ export function PipelinePage() {
                     </span>
                   </div>
                   {a.rejectionReason && <p className="mt-2 rounded bg-rose-50 px-2 py-1 text-xs text-rose-700">{REASONS[a.rejectionReason]}</p>}
+                  {(a.status === 'SHORTLISTED' || a.status === 'INTERVIEW') && (
+                    <button type="button" onClick={() => setScheduling(a)}
+                      className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-md bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100">
+                      <CalendarPlus className="h-3.5 w-3.5" aria-hidden />Schedule interview
+                    </button>
+                  )}
                   {a.allowedNext.length > 0 && (
                     <select
                       aria-label={`Move ${a.candidateName}`}
@@ -147,6 +155,8 @@ export function PipelinePage() {
         ))}
       </div>
 
+      {scheduling && <ScheduleDialog application={scheduling} onClose={() => setScheduling(null)}
+        onScheduled={(text) => { setScheduling(null); setMessage({ tone: 'success', text }) }} />}
       {rejecting && <RejectDialog application={rejecting} busy={move.isPending} onCancel={() => setRejecting(null)}
         onConfirm={(reason, comment) => run(rejecting, 'REJECTED', reason, comment)} />}
     </div>

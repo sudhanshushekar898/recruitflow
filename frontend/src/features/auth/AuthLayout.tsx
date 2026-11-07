@@ -1,5 +1,6 @@
 import { CalendarCheck, KanbanSquare, ShieldCheck } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { Logo } from '../../app/AppLayout'
 
 const POINTS = [
@@ -15,7 +16,7 @@ export function AuthLayout({ title, children }: { title: string; children: React
       <div className="relative hidden w-[44%] overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 p-12 text-white lg:flex lg:flex-col">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-violet-400/20 blur-3xl" aria-hidden />
-        <Logo light />
+        <Link to="/welcome" className="relative w-fit" aria-label="RecruitFlow home"><Logo light /></Link>
         <div className="relative mt-auto max-w-md">
           <h2 className="text-3xl font-bold leading-tight tracking-tight">Hire faster, with every candidate in view.</h2>
           <p className="mt-4 text-indigo-100">The recruitment workspace for agencies: candidates, jobs, pipelines and interviews in one place.</p>

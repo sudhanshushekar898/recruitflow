@@ -83,9 +83,9 @@ describe('route guards', () => {
 
 describe('navigation', () => {
   it('lists admin-only entries only for admins', () => {
-    expect(visibleNav(['RECRUITER']).map((i) => i.label)).toEqual(['Dashboard', 'Jobs', 'Candidates'])
-    expect(visibleNav(['ADMIN']).map((i) => i.label)).toEqual(['Dashboard', 'Jobs', 'Candidates', 'Users'])
-    expect(visibleNav(['INTERVIEWER']).map((i) => i.label)).toEqual(['Dashboard'])
+    expect(visibleNav(['RECRUITER']).map((i) => i.label)).toEqual(['Dashboard', 'Jobs', 'Candidates', 'Interviews', 'My interviews'])
+    expect(visibleNav(['ADMIN']).map((i) => i.label)).toEqual(['Dashboard', 'Jobs', 'Candidates', 'Interviews', 'My interviews', 'Users'])
+    expect(visibleNav(['INTERVIEWER']).map((i) => i.label)).toEqual(['Dashboard', 'My interviews'])
   })
 
   it('renders the sidebar for the signed-in role and signs out', async () => {
@@ -99,8 +99,34 @@ describe('navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Sign out' }))
 
-    expect(await screen.findByRole('heading', { name: 'Sign in to RecruitFlow' })).toBeInTheDocument()
+    // signing out goes to the homepage, never back to this user's last page
+    expect(await screen.findByRole('heading', { name: /Hire faster, with every candidate/ })).toBeInTheDocument()
     expect(authStore.getSnapshot().status).toBe('anonymous')
+  })
+
+  it('shows the homepage to visitors and sends them to sign in from there', async () => {
+    authStore.clear()
+    renderAt(<AppRoutes />, '/')
+
+    expect(await screen.findByRole('heading', { name: /Hire faster, with every candidate/ })).toBeInTheDocument()
+    await userEvent.click(screen.getAllByRole('link', { name: 'Sign in' })[0]!)
+
+    expect(await screen.findByRole('heading', { name: 'Sign in to RecruitFlow' })).toBeInTheDocument()
+  })
+
+  it('returns a visitor to the page they asked for after signing in, but not after a sign-out', async () => {
+    authStore.clear()
+    server.use(
+      http.post('*/api/v1/auth/login', () => HttpResponse.json(loginResponse(userSummary(['ADMIN'])))),
+      http.get('*/api/v1/users', () => HttpResponse.json(emptyUsers)),
+    )
+    renderAt(<AppRoutes />, '/users')
+
+    await userEvent.type(await screen.findByLabelText('Email'), 'ana@example.com')
+    await userEvent.type(screen.getByLabelText('Password'), 'Correct-Horse-Battery-9')
+    await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+
+    expect(await screen.findByRole('heading', { name: 'Users' })).toBeInTheDocument()
   })
 
   it('keeps the session restore result available to the router', async () => {

@@ -25,8 +25,40 @@ class DemoDataSeederIT extends AbstractIntegrationTest {
         assertThat(summary.jobs()).isEqualTo(14);
         assertThat(summary.candidates()).isBetween(130, 150);
         assertThat(summary.applications()).isBetween(80, 250);
+        assertThat(summary.interviews()).isGreaterThan(10);
         assertThat(seeder.seed()).as("second run does nothing").isNull();
         assertThat(count("clients")).isEqualTo(8);
+    }
+
+    @Test
+    void interviewsHaveFeedbackUpcomingSlotsAndNoDoubleBooking() {
+        seeder.seed();
+
+        assertThat(count("interview_feedback")).isGreaterThan(5);
+        assertThat(jdbc.queryForObject("select count(*) from interviews where status = 'SCHEDULED' and scheduled_start > now()", Integer.class))
+                .isGreaterThan(0);
+        assertThat(jdbc.queryForObject("""
+                select count(*) from interview_participants p1
+                join interviews i1 on i1.id = p1.interview_id
+                join interview_participants p2 on p2.user_id = p1.user_id and p2.interview_id <> p1.interview_id
+                join interviews i2 on i2.id = p2.interview_id
+                where i1.status = 'SCHEDULED' and i2.status = 'SCHEDULED'
+                  and i1.scheduled_start < i2.scheduled_end and i1.scheduled_end > i2.scheduled_start""", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("select count(*) from interview_feedback f join interviews i on i.id = f.interview_id where i.status <> 'COMPLETED'",
+                Integer.class)).isZero();
+    }
+
+    @Test
+    void backfillsInterviewsIntoDataFromTheEarlierSeeder() {
+        seeder.seed();
+        jdbc.execute("delete from interviews");
+
+        DemoDataSeeder.Summary backfill = seeder.seed();
+
+        assertThat(backfill).isNotNull();
+        assertThat(backfill.clients()).isZero();
+        assertThat(backfill.interviews()).isGreaterThan(10);
+        assertThat(count("candidates")).isBetween(130, 150); // nothing else was duplicated
     }
 
     @Test

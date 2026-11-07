@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { Briefcase, LayoutDashboard, ShieldCheck, Users } from 'lucide-react'
+import { Briefcase, CalendarCheck, CalendarDays, LayoutDashboard, ShieldCheck, Users } from 'lucide-react'
 import type { Role } from '../types'
 
 export interface NavItem {
@@ -15,6 +15,8 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/jobs', label: 'Jobs', icon: Briefcase, roles: ['ADMIN', 'RECRUITER'] },
   { to: '/candidates', label: 'Candidates', icon: Users, roles: ['ADMIN', 'RECRUITER'] },
+  { to: '/interviews', label: 'Interviews', icon: CalendarDays, roles: ['ADMIN', 'RECRUITER'] },
+  { to: '/my-interviews', label: 'My interviews', icon: CalendarCheck },
   { to: '/users', label: 'Users', icon: ShieldCheck, roles: ['ADMIN'] },
 ]
 

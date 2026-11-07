@@ -34,7 +34,7 @@ public class DemoDataSeeder {
 
     public static final String DEMO_PASSWORD = "Demo-Passphrase-2026";
 
-    public record Summary(int users, int clients, int jobs, int candidates, int applications) {
+    public record Summary(int users, int clients, int jobs, int candidates, int applications, int interviews) {
     }
 
     private static final String[] FIRST = {"Aarav", "Priya", "Liam", "Emma", "Noah", "Olivia", "Mateo", "Sofia", "Kenji", "Yuki",
@@ -115,6 +115,9 @@ public class DemoDataSeeder {
     private final JdbcTemplate jdbc;
     private final PasswordEncoder encoder;
     private final Clock clock;
+    /** Per-run state: who can sit on panels, and the next free slot for upcoming interviews (avoids double-booking). */
+    private List<UUID> interviewers = List.of();
+    private int upcomingSlot;
 
     public DemoDataSeeder(JdbcTemplate jdbc, PasswordEncoder encoder, Clock clock) {
         this.jdbc = jdbc;
@@ -125,20 +128,40 @@ public class DemoDataSeeder {
     /** Returns null when demo data is already there (any client exists) and nothing was done. */
     @Transactional
     public Summary seed() {
-        if (count("clients") > 0) {
-            return null;
-        }
         Random rnd = new Random(2026);
         Instant now = clock.instant();
-        Map<String, UUID> skillIds = skillIds();
-
         List<UUID> recruiters = new ArrayList<>();
+        interviewers = new ArrayList<>();
+        upcomingSlot = 0;
+        if (count("clients") > 0) {
+            // Data from an earlier version of the seeder: add only what that version did not create yet.
+            if (count("interviews") == 0 && count("applications") > 0) {
+                seedStaff(recruiters);
+                return new Summary(0, 0, 0, 0, 0, backfillInterviews(rnd, now));
+            }
+            return null;
+        }
+        Map<String, UUID> skillIds = skillIds();
         int users = seedStaff(recruiters);
         List<UUID> clientIds = seedClients(now);
         List<CandidateRow> candidates = seedCandidates(rnd, now, recruiters, skillIds);
         List<JobRow> jobs = seedJobs(rnd, now, clientIds, recruiters, skillIds);
         int applications = seedApplications(rnd, now, jobs, candidates, recruiters);
-        return new Summary(users, clientIds.size(), jobs.size(), candidates.size(), applications);
+        return new Summary(users, clientIds.size(), jobs.size(), candidates.size(), applications, count("interviews"));
+    }
+
+    private int backfillInterviews(Random rnd, Instant now) {
+        jdbc.query("""
+                select a.id, a.status,
+                       (select min(h.changed_at) from application_status_history h
+                        where h.application_id = a.id and h.to_status = 'INTERVIEW') as reached
+                from applications a
+                where exists (select 1 from application_status_history h where h.application_id = a.id and h.to_status = 'INTERVIEW')
+                order by a.applied_at""",
+                rs -> {
+                    seedInterviews(rnd, now, rs.getObject("id", UUID.class), rs.getTimestamp("reached").toInstant(), rs.getString("status"));
+                });
+        return count("interviews");
     }
 
     private int count(String table) {
@@ -172,6 +195,8 @@ public class DemoDataSeeder {
             }
             if (s.role().equals("RECRUITER")) {
                 recruiters.add(id);
+            } else if (s.role().equals("INTERVIEWER")) {
+                interviewers.add(id);
             }
         }
         return created;
@@ -381,7 +406,64 @@ public class DemoDataSeeder {
                     Ids.newId(), applicationId, i == 0 ? null : path.get(i - 1), path.get(i), owner, ts(times.get(i)),
                     path.get(i).equals("REJECTED") ? "Not progressing: " + reason.toLowerCase(Locale.ROOT).replace('_', ' ') : null);
         }
+        int interviewStep = path.indexOf("INTERVIEW");
+        if (interviewStep >= 0 && !interviewers.isEmpty()) {
+            seedInterviews(rnd, now, applicationId, times.get(interviewStep), finalStatus);
+        }
         return 1;
+    }
+
+    private static final String[] STRENGTHS = {"Clear communicator; explained trade-offs well.", "Strong system design and testing habits.",
+            "Solid fundamentals and good questions about the team.", "Hands-on experience matches the role closely."};
+    private static final String[] CONCERNS = {"Limited production cloud experience.", "Notice period is three months.",
+            "Less depth in performance tuning than expected.", "Would need support on the front end."};
+
+    /**
+     * A completed first round with feedback for applications that got past the interview stage (and for some still
+     * in it), plus an upcoming round for half of those still at INTERVIEW, in slots that never overlap.
+     */
+    private void seedInterviews(Random rnd, Instant now, UUID applicationId, Instant reachedInterview, String finalStatus) {
+        boolean stillInterviewing = finalStatus.equals("INTERVIEW");
+        int round = 0;
+        if (!stillInterviewing || rnd.nextBoolean()) {
+            Instant start = reachedInterview.plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.HOURS);
+            if (start.isAfter(now.minus(3, ChronoUnit.HOURS))) {
+                start = now.minus(3, ChronoUnit.HOURS).truncatedTo(ChronoUnit.HOURS);
+            }
+            UUID interviewId = insertInterview(applicationId, ++round, rnd.nextBoolean() ? "VIDEO" : "TECHNICAL", start, "COMPLETED", rnd);
+            boolean positive = finalStatus.equals("OFFER") || finalStatus.equals("HIRED") || (stillInterviewing && rnd.nextBoolean());
+            for (UUID interviewer : jdbc.queryForList("select user_id from interview_participants where interview_id = ?", UUID.class, interviewId)) {
+                int rating = positive ? 4 + rnd.nextInt(2) : 1 + rnd.nextInt(3);
+                String recommendation = positive ? (rating == 5 ? "STRONG_YES" : "YES") : (rating == 1 ? "STRONG_NO" : "NO");
+                Instant submitted = start.plus(2, ChronoUnit.HOURS);
+                jdbc.update("insert into interview_feedback (id, interview_id, interviewer_id, rating, recommendation, strengths, concerns, submitted_at, created_at, updated_at) values (?,?,?,?,?,?,?,?,?,?)",
+                        Ids.newId(), interviewId, interviewer, rating, recommendation, STRENGTHS[rnd.nextInt(STRENGTHS.length)],
+                        CONCERNS[rnd.nextInt(CONCERNS.length)], ts(submitted), ts(submitted), ts(submitted));
+            }
+        }
+        if (stillInterviewing && rnd.nextBoolean()) {
+            int slot = upcomingSlot++;
+            Instant day = now.truncatedTo(ChronoUnit.DAYS).plus(1 + slot / 4, ChronoUnit.DAYS);
+            insertInterview(applicationId, ++round, round == 1 ? "VIDEO" : "ONSITE", day.plus(9 + 2L * (slot % 4), ChronoUnit.HOURS), "SCHEDULED", rnd);
+        }
+    }
+
+    private UUID insertInterview(UUID applicationId, int round, String type, Instant start, String status, Random rnd) {
+        UUID id = Ids.newId();
+        jdbc.update("""
+                insert into interviews (id, application_id, round_no, type, scheduled_start, scheduled_end, location_or_link, status, created_at, updated_at)
+                values (?,?,?,?,?,?,?,?,?,?)""",
+                id, applicationId, round, type, ts(start), ts(start.plus(1, ChronoUnit.HOURS)),
+                type.equals("ONSITE") ? "Client office, meeting room 2" : "https://meet.example.com/" + id.toString().substring(0, 8),
+                status, ts(start.minus(3, ChronoUnit.DAYS)), ts(start.minus(3, ChronoUnit.DAYS)));
+        List<UUID> panel = new ArrayList<>(interviewers);
+        Collections.shuffle(panel, rnd);
+        // Upcoming interviews use one interviewer each so that consecutive slots never double-book anyone.
+        int size = status.equals("SCHEDULED") ? 1 : 1 + rnd.nextInt(panel.size());
+        for (int i = 0; i < size; i++) {
+            jdbc.update("insert into interview_participants (interview_id, user_id, role) values (?,?,?)", id, panel.get(i), i == 0 ? "LEAD" : "PANEL");
+        }
+        return id;
     }
 
     private static Instant latest(Instant a, Instant b) {

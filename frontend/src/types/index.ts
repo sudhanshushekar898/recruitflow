@@ -57,6 +57,20 @@ type ApplicationOptional = 'candidateEmail' | 'candidateTitle' | 'clientName' | 
 export type ApplicationView = Required<Omit<Schemas['ApplicationView'], ApplicationOptional>> &
   Pick<Schemas['ApplicationView'], ApplicationOptional>
 
+export type InterviewType = NonNullable<Schemas['InterviewView']['type']>
+export type InterviewStatus = NonNullable<Schemas['InterviewView']['status']>
+export type Recommendation = NonNullable<Schemas['FeedbackView']['recommendation']>
+export type ParticipantView = Required<Schemas['ParticipantView']>
+
+type InterviewOptional = 'candidateId' | 'candidateTitle' | 'jobId' | 'clientName' | 'applicationStatus' | 'locationOrLink' | 'notes'
+export type InterviewView = Required<Omit<Schemas['InterviewView'], InterviewOptional | 'participants'>> &
+  Pick<Schemas['InterviewView'], InterviewOptional> & { participants: ParticipantView[] }
+
+export type FeedbackView = Required<Omit<Schemas['FeedbackView'], 'strengths' | 'concerns'>> &
+  Pick<Schemas['FeedbackView'], 'strengths' | 'concerns'>
+export type FeedbackList = { feedback: FeedbackView[]; blinded: boolean; hiddenCount: number }
+export type Interviewer = Required<Schemas['Interviewer']>
+
 export type StatusChangeResult = { application: ApplicationView; jobCloseSuggested: boolean }
 export type StageView = { status: ApplicationStatus; count: number; applications: ApplicationView[] }
 export type PipelineView = {
